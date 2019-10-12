@@ -187,7 +187,14 @@ class CrystalLib::TypeMapper
   end
 
   def map_internal(type : ErrorType)
-    raise "Couldn't import type: #{type}"
+    # TODO: Figure out why this happens for mruby
+    # This works around a specific issue w/ mruby where mrb_value
+    # "fails" to import on the first read of it, but later imports succesfully.
+    # This might be okay, generally, because the generated output could be
+    # modified to explicitly put in the missing type, rather than just failing
+    # altogether.
+    STDERR.puts "Couldn't import type: #{type}"
+    path("Void")
   end
 
   def map_internal(type)
